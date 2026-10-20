@@ -1,74 +1,75 @@
-flowchart TD
+``` mermaid
+flowchart TB
 
-START((START))
+    subgraph C["CZYTELNIK"]
+        A["Wyszukaj i wybierz książkę"]
+        B["Zanieś książkę bibliotekarzowi"]
+        O["Odbierz książkę"]
+    end
 
-subgraph C["CZYTELNIK"]
-A(["Wyszukaj i wybierz książkę"])
-B["Zanieś książkę bibliotekarzowi"]
-M(["Odbierz książkę"])
-end
+    subgraph L["BIBLIOTEKARZ"]
+        D["Zeskanuj kartę czytelnika"]
+        E["Zeskanuj kod egzemplarza"]
+        H["Poinformuj o odmowie"]
+        K["Poinformuj o rezerwacji"]
+        N["Wydaj książkę czytelnikowi"]
+    end
 
-subgraph L["BIBLIOTEKARZ"]
-D["Zeskanuj kartę czytelnika"]
-E["Zeskanuj kod egzemplarza"]
-H["Poinformuj o odmowie"]
-K["Poinformuj o rezerwacji"]
-N["Wydaj książkę czytelnikowi"]
-end
+    subgraph S["SYSTEM"]
+        F["Zweryfikuj uprawnienia"]
+        G{"Czytelnik uprawniony?"}
+        I["Sprawdź dostępność"]
+        J{"Książka dostępna?"}
+        P["Zarejestruj wypożyczenie"]
+    end
 
-subgraph S["SYSTEM"]
-F["Zweryfikuj uprawnienia"]
-G{"Uprawniony?"}
-I["Sprawdź dostępność"]
-J{"Dostępny?"}
-O["Zarejestruj wypożyczenie"]
-end
+    subgraph DB["BAZA DANYCH"]
+        R[("Sprawdź stan egzemplarza")]
+        T[("Zapisz wypożyczenie")]
+    end
 
-subgraph DB["BAZA DANYCH"]
-P[("Sprawdź stan egzemplarza")]
-R[("Zapisz wypożyczenie")]
-end
+    START((START))
+    STOP((KONIEC))
 
-KONIEC((KONIEC))
+    START --> A
+    A --> B
+    B --> D
+    D --> E
+    E --> F
+    F --> G
 
-START --> A
-A --> B
-B --> D
-D --> E
-E --> F
-F --> G
+    G -->|NIE| H
+    H --> STOP
 
-G -->|NIE| H
-H --> KONIEC
+    G -->|TAK| I
+    I --> R
+    R --> J
 
-G -->|TAK| I
-I --> P
-P --> J
+    J -->|NIE| K
+    K --> STOP
 
-J -->|NIE| K
-K --> KONIEC
+    J -->|TAK| P
+    P --> T
+    T --> N
+    N --> O
+    O --> STOP
 
-J -->|TAK| O
-O --> R
-R --> N
-N --> M
-M --> KONIEC
+    classDef czytelnik fill:#d5f5e3,stroke:#27ae60,color:#000
+    classDef bibliotekarz fill:#d6eaf8,stroke:#2980b9,color:#000
+    classDef system fill:#ebdef0,stroke:#8e44ad,color:#000
+    classDef baza fill:#fdebd0,stroke:#e67e22,color:#000
+    classDef decyzja fill:#fadbd8,stroke:#c0392b,color:#000
+    classDef punkt fill:#34495e,stroke:#2c3e50,color:#fff
 
-classDef czytelnik fill:#C8E6C9,stroke:#388E3C,color:#1B5E20
-classDef bibliotekarz fill:#BBDEFB,stroke:#1976D2,color:#0D47A1
-classDef system fill:#E1BEE7,stroke:#8E24AA,color:#4A148C
-classDef baza fill:#FFE0B2,stroke:#F57C00,color:#E65100
-classDef decyzja fill:#F8BBD0,stroke:#D81B60,color:#880E4F
-classDef start fill:#37474F,stroke:#263238,color:#FFFFFF
+    class A,B,O czytelnik
+    class D,E,H,K,N bibliotekarz
+    class F,I,P system
+    class R,T baza
+    class G,J decyzja
+    class START,STOP punkt
 
-class A,B,M czytelnik
-class D,E,H,K,N bibliotekarz
-class F,I,O system
-class P,R baza
-class G,J decyzja
-class START,KONIEC start
-
-style C fill:transparent,stroke:#66BB6A
-style L fill:transparent,stroke:#42A5F5
-style S fill:transparent,stroke:#AB47BC
-style DB fill:transparent,stroke:#FFA726
+    style C fill:transparent,stroke:#27ae60
+    style L fill:transparent,stroke:#2980b9
+    style S fill:transparent,stroke:#8e44ad
+    style DB fill:transparent,stroke:#e67e22
+```
